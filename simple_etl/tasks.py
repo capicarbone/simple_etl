@@ -1,6 +1,6 @@
 import inspect
 from typing import Callable
-from simple_etl.columns import ValueLocator
+from simple_etl.locators import ValueLocator
 from simple_etl.readers import SourceReader
 
 
