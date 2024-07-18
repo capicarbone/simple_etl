@@ -6,11 +6,20 @@ from simple_etl.readers import SourceReader
 
 class ETLTask:
 
-    def __init__(self, reader: SourceReader, mapping) -> None:
+    def __init__(self, mapping: Callable, reader: SourceReader = None) -> None:
         self.reader = reader
         self.mapping_class = mapping
         self.mapping_columns = self.__get_columns_for_mapping()
         self.output_columns : dict[str, tuple[Callable, tuple[tuple[str, ValueLocator]]]] = {}
+
+
+
+    def output_column(self, column_name: str, *args):
+        def decorator(func):
+            self.add_output_column(column_name, func, *args)
+            return func
+
+        return decorator
 
 
     def add_output_column(self, column_name: str, func,  *args):
@@ -50,6 +59,9 @@ class ETLTask:
     def process(self):
 
         self.output_data = []
+
+
+        # TODO validate the existance a raader
         
 
         for record in self.reader.read_row():
