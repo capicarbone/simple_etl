@@ -19,7 +19,7 @@ def driver_id(car_number: str, driver_name: str):
 
 @task.output_column("DriverLastName", TrackDataMapping.driver_name)
 def driver_last_name(driver_name: str):
-    names = driver_name.split(" ")[-1]
+    names = driver_name.split(" ")
     if len(names) < 2:
         return ""
     else:

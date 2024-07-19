@@ -1,5 +1,6 @@
 import inspect
 from typing import Callable
+from simple_etl.loaders import ResultLoader
 from simple_etl.locators import ValueLocator
 from simple_etl.readers import SourceReader
 
@@ -90,8 +91,13 @@ class ETLTask:
             
             self.output_data.append(output_record)
 
-        print(self.output_data)
+        
 
             
-    def load(self):
+    def load(self, loader: ResultLoader):
         self.process()
+
+        for record in self.output_data:
+            loader.save_record(record)
+
+        
