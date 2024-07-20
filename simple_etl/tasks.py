@@ -97,7 +97,16 @@ class ETLTask:
     def load(self, loader: ResultLoader):
         self.process()
 
+
+        if len(self.output_data) == 0:
+            print("No final data")
+            return
+
+        loader.setup_target(self.output_data[0].keys())
+
         for record in self.output_data:
-            loader.save_record(record)
+            loader.load_record(record)
+
+        loader.commit()
 
         
