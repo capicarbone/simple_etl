@@ -1,6 +1,4 @@
 from typing import Any
-from attr import dataclass
-from traitlets import Bool
 
 
 class ValueLocator:
@@ -8,7 +6,7 @@ class ValueLocator:
     def locate(self, record_data: Any):        
         raise NotImplemented()
 
-    def validate_type(self, record_data: Any) -> Bool:
+    def validate_type(self, record_data: Any) -> bool:
         raise NotImplemented()
     
     def get_value(self, record_data: Any):
@@ -20,15 +18,17 @@ class ValueLocator:
 
 
 
-@dataclass
 class DictKey(ValueLocator):
-    key: str
+
+    def __init__(self, key:str) -> None:
+        super().__init__()
+        self.key = key
 
     def locate(self, record_data: dict):
         return record_data.get(self.key, None)
     
 
-    def validate_type(self, record_data: Any) -> Bool:
+    def validate_type(self, record_data: Any) -> bool:
         # TODO Implement accordingly
         return True
     
