@@ -43,11 +43,13 @@ class ETLTask:
 
         return attrs
 
-    def __dependencies_to_mapping_columns(self, dependencies):
+    def __dependencies_to_mapping_columns(
+        self, injects: list[ValueLocator]
+    ) -> list[tuple[str, ValueLocator]]:
 
         result = []
 
-        for dependency in dependencies:
+        for dependency in injects:
 
             mc = None
 
