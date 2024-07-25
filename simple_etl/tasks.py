@@ -34,12 +34,12 @@ class ETLTask:
             self.__dependencies_to_mapping_columns(injects),
         )
 
-    def __get_columns_for_mapping(self) -> tuple[str, ValueLocator]:
+    def __get_columns_for_mapping(self) -> list[tuple[str, ValueLocator]]:
 
         attrs = inspect.getmembers(
             self.mapping_class,
             lambda x: not inspect.isroutine(x) and isinstance(x, ValueLocator),
-        )
+        )        
 
         return attrs
 

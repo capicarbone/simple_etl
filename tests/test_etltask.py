@@ -87,6 +87,33 @@ class ETLTaskTestCase(TestCase):
         self.assertIn('column_3', result_dict)
         self.assertEqual(result_dict['column_3'], TestMapping.column_3)
 
+
+    def test_dependencies_to_mapping_columns_with_wrong_injects(self):
+        pass # TODO pending
+
+    
+    def test_get_columns_for_mapping(self):
+
+        task = ETLTask(mapping=TestMapping)
+
+        result = task._ETLTask__get_columns_for_mapping()
+
+        self.assertEqual(3, len(result))
+        result_dict = dict(result)
+
+        self.assertIn('column_1', result_dict)
+        self.assertEqual(result_dict['column_1'], TestMapping.column_1)
+
+        self.assertIn('column_2', result_dict)
+        self.assertEqual(result_dict['column_2'], TestMapping.column_2)
+
+        self.assertIn('column_3', result_dict)
+        self.assertEqual(result_dict['column_3'], TestMapping.column_3)
+
+
+
+
+
     
 
     # def test_task_processing(self):
