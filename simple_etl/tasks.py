@@ -65,9 +65,7 @@ class ETLTask:
 
         return result
 
-    def process(self):
-
-        self.output_data = []
+    def process(self):        
 
         # TODO validate the existance a raader
 
@@ -94,18 +92,19 @@ class ETLTask:
                 # print(f"Calling {func.__name__} with values {parameters}")
                 output_record[output_column_name] = func(*parameters)
 
-            self.output_data.append(output_record)
+            yield output_record
 
     def load(self, loader: ResultLoader):
-        self.process()
 
-        if len(self.output_data) == 0:
-            print("No final data")
-            return
+        loader.columns = self.output_columns.keys()
 
-        loader.setup_target(self.output_data[0].keys())
+        with loader as l:
 
-        for record in self.output_data:
-            loader.load_record(record)
+            for output_record in self.process():
+                l.load_record(output_record)
 
-        loader.commit()
+            l.commit()
+            
+                                
+        
+
