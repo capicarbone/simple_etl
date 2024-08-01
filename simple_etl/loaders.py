@@ -2,12 +2,19 @@ from rich.console import Console
 from rich.table import Table
 
 
-# TODO as context manager
 class ResultLoader:
 
-    def setup_target(self, columns):
+    def start(self, columns):
         # TODO it must receive the columns with their types
         raise NotImplemented()
+    
+
+    def __enter__(self):
+        self.start(self.columns)
+        return self
+    
+    def __exit__(self, exc_type, exc_value, traceback):
+        pass
 
     def load_record(self, record: dict):
         raise NotImplemented()
@@ -18,7 +25,7 @@ class ResultLoader:
 
 class SimpleConsole(ResultLoader):
 
-    def setup_target(self, columns):
+    def start(self, columns):
         pass
 
     def commit(self):
@@ -33,7 +40,7 @@ class RichConsole(ResultLoader):
     def __init__(self, title="Result") -> None:
         self.title = title
 
-    def setup_target(self, columns):
+    def start(self, columns):
         self.table = Table(title=self.title)
         for c in columns:
             self.table.add_column(c)

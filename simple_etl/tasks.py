@@ -34,20 +34,22 @@ class ETLTask:
             self.__dependencies_to_mapping_columns(injects),
         )
 
-    def __get_columns_for_mapping(self) -> tuple[str, ValueLocator]:
+    def __get_columns_for_mapping(self) -> list[tuple[str, ValueLocator]]:
 
         attrs = inspect.getmembers(
             self.mapping_class,
             lambda x: not inspect.isroutine(x) and isinstance(x, ValueLocator),
-        )
+        )        
 
         return attrs
 
-    def __dependencies_to_mapping_columns(self, dependencies):
+    def __dependencies_to_mapping_columns(
+        self, injects: list[ValueLocator]
+    ) -> list[tuple[str, ValueLocator]]:
 
         result = []
 
-        for dependency in dependencies:
+        for dependency in injects:
 
             mc = None
 
@@ -63,9 +65,7 @@ class ETLTask:
 
         return result
 
-    def process(self):
-
-        self.output_data = []
+    def process(self):        
 
         # TODO validate the existance a raader
 
@@ -92,18 +92,19 @@ class ETLTask:
                 # print(f"Calling {func.__name__} with values {parameters}")
                 output_record[output_column_name] = func(*parameters)
 
-            self.output_data.append(output_record)
+            yield output_record
 
     def load(self, loader: ResultLoader):
-        self.process()
 
-        if len(self.output_data) == 0:
-            print("No final data")
-            return
+        loader.columns = self.output_columns.keys()
 
-        loader.setup_target(self.output_data[0].keys())
+        with loader as l:
 
-        for record in self.output_data:
-            loader.load_record(record)
+            for output_record in self.process():
+                l.load_record(output_record)
 
-        loader.commit()
+            l.commit()
+            
+                                
+        
+
