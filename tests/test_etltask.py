@@ -1,7 +1,7 @@
 import pdb
 from unittest import TestCase
 
-from simple_etl.loaders import RichConsole, SimpleConsole
+from simple_etl.loaders import DummyLoader, RichConsole, SimpleConsole
 from simple_etl.locators import DictKey
 from simple_etl.readers import DictReader
 from simple_etl.tasks import ETLTask
@@ -80,18 +80,16 @@ class ETLTaskTestCase(TestCase):
 
         self.assertEqual(2, len(result))
         result_dict = dict(result)
-        
-        self.assertIn('column_1', result_dict)
-        self.assertEqual(result_dict['column_1'], TestMapping.column_1)
 
-        self.assertIn('column_3', result_dict)
-        self.assertEqual(result_dict['column_3'], TestMapping.column_3)
+        self.assertIn("column_1", result_dict)
+        self.assertEqual(result_dict["column_1"], TestMapping.column_1)
 
+        self.assertIn("column_3", result_dict)
+        self.assertEqual(result_dict["column_3"], TestMapping.column_3)
 
     def test_dependencies_to_mapping_columns_with_wrong_injects(self):
-        pass # TODO pending
+        pass  # TODO pending
 
-    
     def test_get_columns_for_mapping(self):
 
         task = ETLTask(mapping=TestMapping)
@@ -101,20 +99,45 @@ class ETLTaskTestCase(TestCase):
         self.assertEqual(3, len(result))
         result_dict = dict(result)
 
-        self.assertIn('column_1', result_dict)
-        self.assertEqual(result_dict['column_1'], TestMapping.column_1)
+        self.assertIn("column_1", result_dict)
+        self.assertEqual(result_dict["column_1"], TestMapping.column_1)
 
-        self.assertIn('column_2', result_dict)
-        self.assertEqual(result_dict['column_2'], TestMapping.column_2)
+        self.assertIn("column_2", result_dict)
+        self.assertEqual(result_dict["column_2"], TestMapping.column_2)
 
-        self.assertIn('column_3', result_dict)
-        self.assertEqual(result_dict['column_3'], TestMapping.column_3)
+        self.assertIn("column_3", result_dict)
+        self.assertEqual(result_dict["column_3"], TestMapping.column_3)
 
+    def test_process(self):
+        task = ETLTask(mapping=TestMapping)
 
+        task.add_output_column(
+            "column_1",
+            lambda x, y: 11111,
+            injects=[TestMapping.column_1, TestMapping.column_2],
+        )
 
+        task.add_output_column(
+            "column_2",
+            lambda x, y: 222,
+            injects=[TestMapping.column_2, TestMapping.column_3],
+        )
 
+        task.reader = DictReader([{"c1": 23, "c2": 33}, {"c1": 12, "c2": 22}])
 
-    
+        loader = DummyLoader()
+        task.load(loader)
+
+        output = loader.output
+
+        self.assertEqual(2, len(output))
+
+        for r in output:
+            self.assertIn("column_1", r)
+            self.assertIn("column_2", r)
+            self.assertEqual(r["column_1"], 11111)
+            self.assertEqual(r["column_2"], 222)
+            self.assertEqual(2, len(r))
 
     # def test_task_processing(self):
 
