@@ -31,6 +31,21 @@ class DictKey(ValueLocator):
     def validate_type(self, record_data: Any) -> bool:
         # TODO Implement accordingly
         return True
+
+
+class Column(ValueLocator):
+
+    def __init__(self, column_name) -> None:
+        self.column_name = column_name
+
+    def validate_type(self, record_data: Any) -> bool:
+        return True
+
+    
+    def locate(self, record_data: tuple[list[str], list[Any]]):
+        header, values = record_data
+        val_index = header.index(self.column_name)
+        return values[val_index]
     
 
 
