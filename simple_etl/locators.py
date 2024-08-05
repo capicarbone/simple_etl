@@ -7,7 +7,7 @@ class ValueLocator:
         raise NotImplemented()
 
     def validate_type(self, record_data: Any) -> bool:
-        raise NotImplemented()
+        raise NotImplemented() # TODO It should be moved to a class level to avoid repeat the method for each value
     
     def get_value(self, record_data: Any):
         if self.validate_type(record_data):
@@ -31,4 +31,7 @@ class DictKey(ValueLocator):
     def validate_type(self, record_data: Any) -> bool:
         # TODO Implement accordingly
         return True
+    
+
+
     
