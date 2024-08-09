@@ -52,3 +52,20 @@ class RichConsole(ResultLoader):
     def commit(self):
         console = Console()
         console.print(self.table)
+
+
+class DummyLoader(ResultLoader):
+
+    def __init__(self) -> None:
+        super().__init__()
+        self.output = []
+
+    def start(self, columns):
+        pass
+
+    def load_record(self, record: dict):
+        
+        self.output.append(record)
+
+    def commit(self):
+        pass
