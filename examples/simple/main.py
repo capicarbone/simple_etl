@@ -5,6 +5,7 @@ sys.path.insert(0, "../../../simple_etl")
 
 from typing import Annotated
 from simple_etl import ETLTask
+from datetime import timedelta
 from simple_etl.readers import CSVReader
 from simple_etl.loaders import RichConsole
 from simple_etl.locators import Column
@@ -71,7 +72,20 @@ def lap_time(
     s2: Annotated[str, TrackDataMapping.s2],
     s3: Annotated[str, TrackDataMapping.s3],
 ):
-    pass
+
+    laptime = timedelta()
+    for s in [s1, s2, s3]:
+        hours, minutes, seconds = s.split(":")
+        seconds, milliseconds = seconds.split(".")
+
+        laptime += timedelta(
+            hours=int(hours),
+            minutes=int(minutes),
+            seconds=int(seconds),
+            milliseconds=int(milliseconds),
+        )
+
+    return str(laptime)[0:11]
 
 
 if __name__ == "__main__":
