@@ -85,7 +85,12 @@ def lap_time(
             milliseconds=int(milliseconds),
         )
 
-    return str(laptime)[0:11]
+    laptime = str(laptime)
+
+    if len(laptime.split(":")[0]) == 1:
+        laptime = "0" + laptime
+
+    return laptime[0:12]
 
 
 if __name__ == "__main__":
