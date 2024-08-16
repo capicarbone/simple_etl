@@ -1,5 +1,6 @@
 import inspect
 from typing import Callable, Annotated
+
 from simple_etl.loaders import ResultLoader
 from simple_etl.locators import ValueLocator
 from simple_etl.readers import SourceReader
@@ -7,13 +8,10 @@ from simple_etl.readers import SourceReader
 
 class ETLTask:
 
-    def __init__(self, mapping: Callable, reader: SourceReader = None) -> None:
+    def __init__(self, mapping: Callable = None, reader: SourceReader = None) -> None:
         self.reader = reader
-        self.mapping_class = mapping
-        self.mapping_columns = self.__get_columns_for_mapping()
-        self.output_columns: dict[
-            str, tuple[Callable, tuple[tuple[str, ValueLocator]]]
-        ] = {}
+        # self.mapping_columns = self.__get_columns_for_mapping(mapping)
+        self.output_columns: dict[str, tuple[Callable, list[ValueLocator]]] = {}
 
     def output_column(self, column_name: str):
         def decorator(func: Callable):
@@ -31,17 +29,17 @@ class ETLTask:
         # TODO convert dependencies to mapping_columns
         self.output_columns[column_name] = (
             func,
-            self.__dependencies_to_mapping_columns(injects),
+            injects,
         )
 
-    def __get_columns_for_mapping(self) -> list[tuple[str, ValueLocator]]:
+    def __get_columns_for_mapping(self, mapping_class) -> list[ValueLocator]:
 
         attrs = inspect.getmembers(
-            self.mapping_class,
+            mapping_class,
             lambda x: not inspect.isroutine(x) and isinstance(x, ValueLocator),
-        )        
+        )
 
-        return attrs
+        return [at[1] for at in attrs]
 
     def __dependencies_to_mapping_columns(
         self, injects: list[ValueLocator]
@@ -65,7 +63,7 @@ class ETLTask:
 
         return result
 
-    def process(self):        
+    def process(self):
 
         # TODO validate the existance a raader
 
@@ -76,18 +74,17 @@ class ETLTask:
             output_record = {}
 
             for output_column_name, process_data in self.output_columns.items():
-                func, dependencies = process_data
+                func, injects = process_data
 
                 parameters = []
 
-                for dependecy in dependencies:
-                    dependency_key, locator = dependecy
+                for locator in injects:
 
-                    if dependency_key not in values_map:
+                    if locator not in values_map:
 
-                        values_map[dependency_key] = locator.get_value(record)
+                        values_map[locator] = locator.get_value(record)
 
-                    parameters.append(values_map[dependency_key])
+                    parameters.append(values_map[locator])
 
                 # print(f"Calling {func.__name__} with values {parameters}")
                 output_record[output_column_name] = func(*parameters)
@@ -104,7 +101,3 @@ class ETLTask:
                 l.load_record(output_record)
 
             l.commit()
-            
-                                
-        
-
