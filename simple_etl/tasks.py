@@ -156,11 +156,9 @@ class GroupedETLTask(ETLTask):
                 parameters = self._get_output_parameters(record, injects, values_map)
 
                 # print(f"Calling {func.__name__} with values {parameters}")
-
-                # import pdb; pdb.set_trace()
                 
-                last_value = agg_values.get(output_column_name, None)
-                parameters.append(last_value)
+                if output_column_name in agg_values:
+                    parameters.append(agg_values[output_column_name])
                 output_record[output_column_name] = func(*parameters)
 
             groups[group] = output_record

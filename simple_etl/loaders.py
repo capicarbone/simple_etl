@@ -47,7 +47,7 @@ class RichConsole(ResultLoader):
 
     def load_record(self, record: dict):
 
-        self.table.add_row(*record.values())
+        self.table.add_row(*[str(v) for v in record.values()])
 
     def commit(self):
         console = Console()
