@@ -1,5 +1,5 @@
 import inspect
-from typing import Callable, Annotated
+from typing import Any, Callable, Annotated
 
 from simple_etl.loaders import ResultLoader
 from simple_etl.locators import ValueLocator
@@ -76,20 +76,28 @@ class ETLTask:
             for output_column_name, process_data in self.output_columns.items():
                 func, injects = process_data
 
-                parameters = []
-
-                for locator in injects:
-
-                    if locator not in values_map:
-
-                        values_map[locator] = locator.get_value(record)
-
-                    parameters.append(values_map[locator])
+                parameters = self.__get_output_parameters(record, injects, values_map)
 
                 # print(f"Calling {func.__name__} with values {parameters}")
                 output_record[output_column_name] = func(*parameters)
 
             yield output_record
+
+
+    def __get_output_parameters(self, record: Any, locators: list[ValueLocator], values_cache: dict[ValueLocator, Any]):
+
+        parameters = []
+        
+        for locator in locators:
+
+            if locator not in values_cache:
+
+                values_cache[locator] = locator.get_value(record)
+
+            parameters.append(values_cache[locator])
+
+        return parameters
+        
 
     def load(self, loader: ResultLoader):
 
