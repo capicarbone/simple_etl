@@ -1,1 +1,1 @@
-from .tasks import ETLTask
+from .tasks import ETLTask, GroupedETLTask
