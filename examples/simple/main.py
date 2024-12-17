@@ -21,7 +21,7 @@ class TrackDataMapping:
     s3 = Column("S3")
 
 
-task = ETLTask(TrackDataMapping, CSVReader("track-data.csv"))
+task = ETLTask()
 
 
 def kmp_to_mph(value) -> float:
@@ -94,4 +94,5 @@ def lap_time(
 
 
 if __name__ == "__main__":
+    task.reader = CSVReader("track-data.csv")
     task.load(RichConsole())
