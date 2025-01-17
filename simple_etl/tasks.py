@@ -36,9 +36,9 @@ class ETLTask:
             injects,
         )
 
-    def passtrhough(self, locator: ValueLocator):
+    def passtrhough(self, locator: ValueLocator, output_name=None):
         self.add_output_column(
-            column_name=locator.identifier,
+            column_name=output_name or locator.identifier,
             func=lambda x: x,
             injects=[locator]
         )

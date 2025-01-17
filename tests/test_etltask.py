@@ -135,3 +135,18 @@ class ETLTaskTestCase(TestCase):
         for input_item, output_item in zip(input,output):
             self.assertIn('c1', output_item)
             self.assertEqual(output_item['c1'], input_item['c1'])
+
+    def test_passthrough_with_different_name(self):
+        task = ETLTask()
+
+        task.passtrhough(TestMapping.column_1, output_name='o1')
+
+        input = [{"c1": 23, "c2": 33}, {"c1": 12, "c2": 22}]
+        task.reader = DictReader(input)
+        loader = DummyLoader()
+        task.load(loader)
+        output = loader.output
+
+        for input_item, output_item in zip(input,output):
+            self.assertIn('o1', output_item)
+            self.assertEqual(output_item['o1'], input_item['c1'])
