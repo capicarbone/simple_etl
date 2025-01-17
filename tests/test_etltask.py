@@ -90,26 +90,8 @@ class ETLTaskTestCase(TestCase):
     def test_dependencies_to_mapping_columns_with_wrong_injects(self):
         pass  # TODO pending
 
-    # def test_get_columns_for_mapping(self):
-
-    #     task = ETLTask()
-
-    #     result = task._ETLTask__get_columns_for_mapping(TestMapping)
-
-    #     self.assertEqual(3, len(result))
-
-
-    #     self.assertIn(TestMapping.column_1, result)
-    #     # self.assertEqual(result_dict["column_1"], TestMapping.column_1)
-
-    #     self.assertIn(TestMapping.column_2, result)
-    #     # self.assertEqual(result_dict["column_2"], TestMapping.column_2)
-
-    #     self.assertIn(TestMapping.column_3, result)
-    #     # self.assertEqual(result_dict["column_3"], TestMapping.column_3)
-
     def test_process(self):
-        task = ETLTask(mapping=TestMapping)
+        task = ETLTask()
 
         task.add_output_column(
             "column_1",
@@ -139,9 +121,17 @@ class ETLTaskTestCase(TestCase):
             self.assertEqual(r["column_2"], 222)
             self.assertEqual(2, len(r))
 
-    # def test_task_processing(self):
+    def test_passthrough_with_same_name(self):
+        task = ETLTask()
 
-    #     reader = DictReader(track_data)
-    #     task.reader = reader
+        task.passtrhough(TestMapping.column_1)
 
-    #     task.load(RichConsole())
+        input = [{"c1": 23, "c2": 33}, {"c1": 12, "c2": 22}]
+        task.reader = DictReader(input)
+        loader = DummyLoader()
+        task.load(loader)
+        output = loader.output
+
+        for input_item, output_item in zip(input,output):
+            self.assertIn('c1', output_item)
+            self.assertEqual(output_item['c1'], input_item['c1'])

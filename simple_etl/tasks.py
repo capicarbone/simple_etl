@@ -36,6 +36,13 @@ class ETLTask:
             injects,
         )
 
+    def passtrhough(self, locator: ValueLocator):
+        self.add_output_column(
+            column_name=locator.identifier,
+            func=lambda x: x,
+            injects=[locator]
+        )
+
     def __get_columns_for_mapping(self, mapping_class) -> list[ValueLocator]:
 
         attrs = inspect.getmembers(
