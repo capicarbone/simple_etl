@@ -8,7 +8,7 @@ from simple_etl.readers import SourceReader
 
 class ETLTask:
 
-    def __init__(self, mapping: Callable = None, reader: SourceReader = None) -> None:
+    def __init__(self, reader: SourceReader = None) -> None:
         self.reader = reader
         # self.mapping_columns = self.__get_columns_for_mapping(mapping)
         self.output_columns: dict[str, tuple[Callable, list[ValueLocator]]] = {}

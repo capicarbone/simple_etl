@@ -19,7 +19,7 @@ class ETLTaskTestCase(TestCase):
 
     def test_add_output_column(self):
 
-        task = ETLTask(mapping=TestMapping)
+        task = ETLTask()
 
         func_1 = lambda x: x
         func_2 = lambda x, y: x + y

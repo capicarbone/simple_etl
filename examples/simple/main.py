@@ -21,7 +21,7 @@ class TrackDataMapping:
     s3 = Column("S3")
 
 
-task = ETLTask(TrackDataMapping, CSVReader("track-data.csv"))
+task = ETLTask(CSVReader("track-data.csv"))
 
 
 def kmp_to_mph(value) -> float:
