@@ -8,7 +8,7 @@ class TrackDataMapping:
     car_number = DictKey("car number")
 
 
-task = ETLTask(TrackDataMapping)
+task = ETLTask()
 
 
 @task.output_column("DriverID")

@@ -8,7 +8,7 @@ from simple_etl.locators import Column
 from simple_etl.readers import CSVReader
 from simple_etl.loaders import RichConsole
 
-task = GroupedETLTask(reader=CSVReader("sales_data.csv"))
+task = GroupedETLTask()
 
 
 @task.group()
@@ -30,6 +30,5 @@ def total(
 
 
 if __name__ == "__main__":
-    task.load(RichConsole())
+    task.load(CSVReader("sales_data.csv"), RichConsole())
 
-# import pdb; pdb.set_trace()

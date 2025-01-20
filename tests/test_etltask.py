@@ -5,8 +5,7 @@ from simple_etl.loaders import DummyLoader, RichConsole, SimpleConsole
 from simple_etl.locators import DictKey
 from simple_etl.readers import DictReader
 from simple_etl.tasks import ETLTask
-from .data import track_data
-from .etl_tasks.driver_times import task
+
 
 
 class TestMapping:
@@ -105,10 +104,10 @@ class ETLTaskTestCase(TestCase):
             injects=[TestMapping.column_2, TestMapping.column_3],
         )
 
-        task.reader = DictReader([{"c1": 23, "c2": 33}, {"c1": 12, "c2": 22}])
+        reader = DictReader([{"c1": 23, "c2": 33}, {"c1": 12, "c2": 22}])
 
         loader = DummyLoader()
-        task.load(loader)
+        task.load(reader, loader)
 
         output = loader.output
 
@@ -127,9 +126,8 @@ class ETLTaskTestCase(TestCase):
         task.passtrhough(TestMapping.column_1)
 
         input = [{"c1": 23, "c2": 33}, {"c1": 12, "c2": 22}]
-        task.reader = DictReader(input)
         loader = DummyLoader()
-        task.load(loader)
+        task.load(DictReader(input), loader)
         output = loader.output
 
         for input_item, output_item in zip(input,output):
@@ -142,9 +140,8 @@ class ETLTaskTestCase(TestCase):
         task.passtrhough(TestMapping.column_1, output_name='o1')
 
         input = [{"c1": 23, "c2": 33}, {"c1": 12, "c2": 22}]
-        task.reader = DictReader(input)
         loader = DummyLoader()
-        task.load(loader)
+        task.load(DictReader(input), loader)
         output = loader.output
 
         for input_item, output_item in zip(input,output):
