@@ -30,11 +30,7 @@ def kmp_to_mph(value) -> float:
 
 # Transforms
 
-
-@task.output_column("Lap")
-def lap(lap: Annotated[str, TrackDataMapping.lap]):
-    return lap
-
+task.passthrough(TrackDataMapping.lap)
 
 @task.output_column("Min speed (mph)")
 def min_speed_mph(kmh: Annotated[str, TrackDataMapping.min_speed]):
@@ -51,20 +47,9 @@ def avg_speed_mph(kmh: Annotated[str, TrackDataMapping.avg_speed]):
     return str(kmp_to_mph(float(kmh)))
 
 
-@task.output_column("S1")
-def s1(sector: Annotated[str, TrackDataMapping.s1]):
-    return sector
-
-
-@task.output_column("S2")
-def s2(sector: Annotated[str, TrackDataMapping.s2]):
-    return sector
-
-
-@task.output_column("S3")
-def s3(sector: Annotated[str, TrackDataMapping.s3]):
-    return sector
-
+task.passthrough(TrackDataMapping.s1)
+task.passthrough(TrackDataMapping.s2)
+task.passthrough(TrackDataMapping.s3)
 
 @task.output_column("Lap time")
 def lap_time(
@@ -94,6 +79,4 @@ def lap_time(
 
 
 if __name__ == "__main__":
-    with open("track-data.csv") as f:
-        task.reader = CSVReader(f)
-        task.load(RichConsole())
+    task.load(CSVReader("track-data.csv"), RichConsole())

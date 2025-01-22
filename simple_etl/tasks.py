@@ -8,9 +8,8 @@ from simple_etl.readers import SourceReader
 
 class ETLTask:
 
-    def __init__(self, mapping: Callable = None, reader: SourceReader = None) -> None:
-        self.reader = reader
-        # self.mapping_columns = self.__get_columns_for_mapping(mapping)
+    def __init__(self) -> None:
+
         self.output_columns: dict[str, tuple[Callable, list[ValueLocator]]] = {}
 
     def _extract_locators_from_function_parameters(self, func: Callable) -> list[ValueLocator]:
@@ -34,6 +33,13 @@ class ETLTask:
         self.output_columns[column_name] = (
             func,
             injects,
+        )
+
+    def passthrough(self, locator: ValueLocator, output_name=None):
+        self.add_output_column(
+            column_name=output_name or locator.identifier,
+            func=lambda x: x,
+            injects=[locator]
         )
 
     def __get_columns_for_mapping(self, mapping_class) -> list[ValueLocator]:
@@ -67,11 +73,11 @@ class ETLTask:
 
         return result
 
-    def process(self):
+    def process(self, reader: SourceReader):
 
         # TODO validate the existance a raader
 
-        for record in self.reader.read_row():
+        for record in reader.read_row():
 
             values_map = {}
 
@@ -103,13 +109,13 @@ class ETLTask:
         return parameters
         
 
-    def load(self, loader: ResultLoader):
+    def load(self, reader: SourceReader, loader: ResultLoader):
 
         loader.columns = self.output_columns.keys()
 
         with loader as l:
 
-            for output_record in self.process():
+            for output_record in self.process(reader):
                 l.load_record(output_record)
 
             l.commit()
@@ -133,10 +139,10 @@ class GroupedETLTask(ETLTask):
         self.group_rule = (func, injects)
         
 
-    def process(self):
+    def process(self, reader: SourceReader):
 
         groups = {}
-        for record in self.reader.read_row():
+        for record in reader.read_row():
 
             values_map = {}
 

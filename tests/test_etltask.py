@@ -5,8 +5,7 @@ from simple_etl.loaders import DummyLoader, RichConsole, SimpleConsole
 from simple_etl.locators import DictKey
 from simple_etl.readers import DictReader
 from simple_etl.tasks import ETLTask
-from .data import track_data
-from .etl_tasks.driver_times import task
+
 
 
 class TestMapping:
@@ -19,7 +18,7 @@ class ETLTaskTestCase(TestCase):
 
     def test_add_output_column(self):
 
-        task = ETLTask(mapping=TestMapping)
+        task = ETLTask()
 
         func_1 = lambda x: x
         func_2 = lambda x, y: x + y
@@ -90,26 +89,8 @@ class ETLTaskTestCase(TestCase):
     def test_dependencies_to_mapping_columns_with_wrong_injects(self):
         pass  # TODO pending
 
-    # def test_get_columns_for_mapping(self):
-
-    #     task = ETLTask()
-
-    #     result = task._ETLTask__get_columns_for_mapping(TestMapping)
-
-    #     self.assertEqual(3, len(result))
-
-
-    #     self.assertIn(TestMapping.column_1, result)
-    #     # self.assertEqual(result_dict["column_1"], TestMapping.column_1)
-
-    #     self.assertIn(TestMapping.column_2, result)
-    #     # self.assertEqual(result_dict["column_2"], TestMapping.column_2)
-
-    #     self.assertIn(TestMapping.column_3, result)
-    #     # self.assertEqual(result_dict["column_3"], TestMapping.column_3)
-
     def test_process(self):
-        task = ETLTask(mapping=TestMapping)
+        task = ETLTask()
 
         task.add_output_column(
             "column_1",
@@ -123,10 +104,10 @@ class ETLTaskTestCase(TestCase):
             injects=[TestMapping.column_2, TestMapping.column_3],
         )
 
-        task.reader = DictReader([{"c1": 23, "c2": 33}, {"c1": 12, "c2": 22}])
+        reader = DictReader([{"c1": 23, "c2": 33}, {"c1": 12, "c2": 22}])
 
         loader = DummyLoader()
-        task.load(loader)
+        task.load(reader, loader)
 
         output = loader.output
 
@@ -139,9 +120,30 @@ class ETLTaskTestCase(TestCase):
             self.assertEqual(r["column_2"], 222)
             self.assertEqual(2, len(r))
 
-    # def test_task_processing(self):
+    def test_passthrough_with_same_name(self):
+        task = ETLTask()
 
-    #     reader = DictReader(track_data)
-    #     task.reader = reader
+        task.passthrough(TestMapping.column_1)
 
-    #     task.load(RichConsole())
+        input = [{"c1": 23, "c2": 33}, {"c1": 12, "c2": 22}]
+        loader = DummyLoader()
+        task.load(DictReader(input), loader)
+        output = loader.output
+
+        for input_item, output_item in zip(input,output):
+            self.assertIn('c1', output_item)
+            self.assertEqual(output_item['c1'], input_item['c1'])
+
+    def test_passthrough_with_different_name(self):
+        task = ETLTask()
+
+        task.passthrough(TestMapping.column_1, output_name='o1')
+
+        input = [{"c1": 23, "c2": 33}, {"c1": 12, "c2": 22}]
+        loader = DummyLoader()
+        task.load(DictReader(input), loader)
+        output = loader.output
+
+        for input_item, output_item in zip(input,output):
+            self.assertIn('o1', output_item)
+            self.assertEqual(output_item['o1'], input_item['c1'])
