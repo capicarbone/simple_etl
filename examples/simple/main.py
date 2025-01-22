@@ -30,7 +30,7 @@ def kmp_to_mph(value) -> float:
 
 # Transforms
 
-task.passtrhough(TrackDataMapping.lap)
+task.passthrough(TrackDataMapping.lap)
 
 @task.output_column("Min speed (mph)")
 def min_speed_mph(kmh: Annotated[str, TrackDataMapping.min_speed]):
@@ -47,9 +47,9 @@ def avg_speed_mph(kmh: Annotated[str, TrackDataMapping.avg_speed]):
     return str(kmp_to_mph(float(kmh)))
 
 
-task.passtrhough(TrackDataMapping.s1)
-task.passtrhough(TrackDataMapping.s2)
-task.passtrhough(TrackDataMapping.s3)
+task.passthrough(TrackDataMapping.s1)
+task.passthrough(TrackDataMapping.s2)
+task.passthrough(TrackDataMapping.s3)
 
 @task.output_column("Lap time")
 def lap_time(

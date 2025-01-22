@@ -123,7 +123,7 @@ class ETLTaskTestCase(TestCase):
     def test_passthrough_with_same_name(self):
         task = ETLTask()
 
-        task.passtrhough(TestMapping.column_1)
+        task.passthrough(TestMapping.column_1)
 
         input = [{"c1": 23, "c2": 33}, {"c1": 12, "c2": 22}]
         loader = DummyLoader()
@@ -137,7 +137,7 @@ class ETLTaskTestCase(TestCase):
     def test_passthrough_with_different_name(self):
         task = ETLTask()
 
-        task.passtrhough(TestMapping.column_1, output_name='o1')
+        task.passthrough(TestMapping.column_1, output_name='o1')
 
         input = [{"c1": 23, "c2": 33}, {"c1": 12, "c2": 22}]
         loader = DummyLoader()
