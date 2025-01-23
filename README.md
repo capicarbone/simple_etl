@@ -28,10 +28,10 @@ def price(
 # and the price columns
 @task.computed("Total")
 def product_total(
-        qty: Annotated[int, Column('qty')],
-        price: Annotated[float, Column('price')]
+        qty: Annotated[str, Column('qty')],
+        price: Annotated[str, Column('price')]
 ):
-    return f"${round(qty * price, 2)}"
+    return f"${round(int(qty) * float(price), 2)}"
 
 # Setting up the output and the input
 with open("shoping_cart.csv") as csvfile:
