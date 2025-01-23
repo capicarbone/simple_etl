@@ -2,7 +2,7 @@
 Simple ETL
 ---
 
-Simple ETL is a library for Python intended for writing ETL scripts with focus on testability and readability, hence, code easy to maintain, with an eye on optimization.
+Simple ETL is a library for Python intended for writing ETL scripts with focus on testability and readability, hence, code easier to maintain, with an eye on optimization.
 
 ```python
 from typing import Annotated
