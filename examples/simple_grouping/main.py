@@ -16,12 +16,12 @@ def group_by_product(product_name: Annotated[str, Column("Product")]):
     return product_name.lower().strip()
 
 
-@task.output_column("product")
+@task.computed("product")
 def product(product_name: Annotated[str, Column("Product")], _=None):
     return product_name
 
 
-@task.output_column("total")
+@task.computed("total")
 def total(
     qty: Annotated[str, Column("Qty")], price: Annotated[str, Column("Price")], agg=0
 ):

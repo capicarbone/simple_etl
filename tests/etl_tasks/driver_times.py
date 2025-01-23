@@ -11,7 +11,7 @@ class TrackDataMapping:
 task = ETLTask()
 
 
-@task.output_column("DriverID")
+@task.computed("DriverID")
 def driver_id(
     car_number: Annotated[str, TrackDataMapping.car_number],
     driver_name: Annotated[str, TrackDataMapping.driver_name],
@@ -19,7 +19,7 @@ def driver_id(
     return " ".join([car_number, driver_name.upper()]).strip()
 
 
-@task.output_column("DriverLastName")
+@task.computed("DriverLastName")
 def driver_last_name(driver_name: Annotated[str, TrackDataMapping.driver_name]):
     names = driver_name.split(" ")
     if len(names) < 2:

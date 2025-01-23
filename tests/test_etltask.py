@@ -47,7 +47,7 @@ class ETLTaskTestCase(TestCase):
         ]
 
         for oc in test_input:
-            task.add_output_column(**oc)
+            task.add_computed(**oc)
 
         output_columns = task.output_columns
 
@@ -92,13 +92,13 @@ class ETLTaskTestCase(TestCase):
     def test_process(self):
         task = ETLTask()
 
-        task.add_output_column(
+        task.add_computed(
             "column_1",
             lambda x, y: 11111,
             injects=[TestMapping.column_1, TestMapping.column_2],
         )
 
-        task.add_output_column(
+        task.add_computed(
             "column_2",
             lambda x, y: 222,
             injects=[TestMapping.column_2, TestMapping.column_3],

@@ -17,15 +17,15 @@ class ETLTask:
         return [a.__metadata__[0] for a in annotations]
 
 
-    def output_column(self, column_name: str):
+    def computed(self, column_name: str):
         def decorator(func: Callable):
             injects = self._extract_locators_from_function_parameters(func)
-            self.add_output_column(column_name, func, injects)
+            self.add_computed(column_name, func, injects)
             return func
 
         return decorator
 
-    def add_output_column(
+    def add_computed(
         self, column_name: str, func: Callable, injects: list[ValueLocator]
     ):
 
@@ -36,7 +36,7 @@ class ETLTask:
         )
 
     def passthrough(self, locator: ValueLocator, output_name=None):
-        self.add_output_column(
+        self.add_computed(
             column_name=output_name or locator.identifier,
             func=lambda x: x,
             injects=[locator]
