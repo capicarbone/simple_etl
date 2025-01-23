@@ -79,4 +79,5 @@ def lap_time(
 
 
 if __name__ == "__main__":
-    task.load(CSVReader("track-data.csv"), RichConsole())
+    with open("track-data.csv") as f:
+        task.load(CSVReader(f), RichConsole())

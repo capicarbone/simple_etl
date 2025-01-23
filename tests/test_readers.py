@@ -27,25 +27,26 @@ class TestCSVReader(TestCase):
 
     def test_correct_reading(self):
 
-        reader = CSVReader(self.test_file, delimiter=',')
-        
-        data = []
+        with open(self.test_file) as f:
+            reader = CSVReader(f, delimiter=',')
 
-        for row in reader.read_row():
-            self.assertIsInstance(row, tuple)
-            self.assertEqual(2, len(row), "A tuple with two elements is expected")
+            data = []
 
-            header, values = row            
+            for row in reader.read_row():
+                self.assertIsInstance(row, tuple)
+                self.assertEqual(2, len(row), "A tuple with two elements is expected")
 
-            data.append(values)
+                header, values = row
 
-        self.assertEqual(3, len(header))
-        self.assertEqual(4, len(data))
-        
-        self.assertEqual(data[1][1], '15')
-        self.assertEqual(data[3][2], '13')
-        self.assertEqual(data[2][0], '57')
-        self.assertEqual(data[0][2], '10')
+                data.append(values)
+
+            self.assertEqual(3, len(header))
+            self.assertEqual(4, len(data))
+
+            self.assertEqual(data[1][1], '15')
+            self.assertEqual(data[3][2], '13')
+            self.assertEqual(data[2][0], '57')
+            self.assertEqual(data[0][2], '10')
 
 
 

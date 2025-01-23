@@ -30,5 +30,6 @@ def total(
 
 
 if __name__ == "__main__":
-    task.load(CSVReader("sales_data.csv"), RichConsole())
+    with open("sales_data.csv") as f:
+        task.load(CSVReader(f), RichConsole())
 
