@@ -1,3 +1,6 @@
+import io
+import csv
+
 from rich.console import Console
 from rich.table import Table
 
@@ -66,6 +69,23 @@ class DummyLoader(ResultLoader):
     def load_record(self, record: dict):
         
         self.output.append(record)
+
+    def commit(self):
+        pass
+
+
+class CSVLoader(ResultLoader):
+
+    def __init__(self, file_obj: io.TextIOBase, *args, **kwargs):
+        super().__init__()
+        self.file_obj = file_obj
+        self.writer = csv.writer(file_obj, *args, **kwargs)
+
+    def start(self, columns: dict):
+        self.writer.writerow(columns.keys())
+
+    def load_record(self, record: dict):
+        self.writer.writerow(record.values())
 
     def commit(self):
         pass
