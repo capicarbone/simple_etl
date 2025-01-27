@@ -3,11 +3,11 @@ import os.path
 from unittest import TestCase
 from simple_etl.loaders import CSVLoader
 
+
 class TestCSVLoader(TestCase):
 
     def setUp(self):
         self.test_filename = "loader_test.csv"
-        # self.test_fileobj = open(self.test_filename, "w")
 
     def test_sucessfull_loading(self):
 
@@ -35,12 +35,9 @@ class TestCSVLoader(TestCase):
                 if i == 0:
                     self.assertEqual(list(columns.keys()), row)
                 else:
-                    ref_record = records[i-1].values()
+                    ref_record = records[i - 1].values()
                     self.assertEqual(len(ref_record), len(row))
-
 
     def tearDown(self):
         if os.path.exists(self.test_filename):
             os.remove(self.test_filename)
-
-
