@@ -4,6 +4,8 @@ Simple ETL
 
 Simple ETL is a library for Python intended for writing ETL scripts with focus on testability and readability, hence, code easier to maintain, with an eye on optimization.
 
+## Example
+---
 ```python
 from typing import Annotated
 from simple_etl import ETLTask, CSVReader, CSVLoader, Column
@@ -19,7 +21,7 @@ task.passthrough(Column("qty"), "Quantity")
 # as a function parameter. 
 @task.computed('Price')
 def price(
-        price: Annotated[float, Column('price')]
+        price: Annotated[str, Column('price')]
 ):
     return f"${price}"
 

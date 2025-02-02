@@ -14,8 +14,8 @@ class TestCSVLoader(TestCase):
         columns = {'Index': str, 'Message': str}
 
         records = [
-            {'Index': '1', 'Message': 'Hello'},
-            {'Index': '2', 'Message': 'World'}
+            {'Index': 1, 'Message': 'Hello'},
+            {'Index': 2, 'Message': 'World'}
         ]
 
         with open(self.test_filename, "w") as f:
